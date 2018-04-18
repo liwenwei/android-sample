@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Black Menu -->
+    <style name="mBlackMenu">
+        <item name="android:background">@drawable/rounded_corner</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:divider">@drawable/vertical_linear_layout_divider</item>
+    </style>
+
+</resources>
