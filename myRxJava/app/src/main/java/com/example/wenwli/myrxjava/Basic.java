@@ -7,6 +7,8 @@ import rx.Subscriber;
 public class Basic {
 
     public static void run() {
+        Log.i(MainActivity.TAG ,"run_basic : ");
+
         rx.Observable.create(new rx.Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
