@@ -21,5 +21,10 @@ public class MainActivity extends AppCompatActivity {
         mapping.run_concatMap();
         mapping.run_flatMapIterable();
         mapping.run_switchMap();
+        mapping.run_scan();
+        mapping.run_groupBy();
+
+        // Filter
+        filter.run();
     }
 }

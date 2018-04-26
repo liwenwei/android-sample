@@ -6,10 +6,15 @@ import com.example.wenwli.myrxjava.models.Community;
 import com.example.wenwli.myrxjava.models.House;
 import com.example.wenwli.myrxjava.utils.DataSimulator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.observables.GroupedObservable;
 
 public class mapping {
 
@@ -121,7 +126,7 @@ public class mapping {
                 .subscribe(new Action1<House>() {
                     @Override
                     public void call(House house) {
-                        Log.i(MainActivity.TAG ,"[FlatMap] House price : " + house.getPrice());
+                        Log.i(MainActivity.TAG, "[FlatMap] House price : " + house.getPrice());
                     }
                 });
     }
@@ -137,7 +142,7 @@ public class mapping {
                 .subscribe(new Action1<House>() {
                     @Override
                     public void call(House house) {
-                        Log.i(MainActivity.TAG ,"[ConcatMap] House price : " + house.getPrice());
+                        Log.i(MainActivity.TAG, "[ConcatMap] House price : " + house.getPrice());
                     }
                 });
     }
@@ -153,7 +158,7 @@ public class mapping {
                 .subscribe(new Action1<House>() {
                     @Override
                     public void call(House house) {
-                        Log.i(MainActivity.TAG ,"[FlatMapIterable] House price : " + house.getPrice());
+                        Log.i(MainActivity.TAG, "[FlatMapIterable] House price : " + house.getPrice());
                     }
                 });
     }
@@ -169,7 +174,49 @@ public class mapping {
                 .subscribe(new Action1<House>() {
                     @Override
                     public void call(House house) {
-                        Log.i(MainActivity.TAG ,"[SwiMap] House price : " + house.getPrice());
+                        Log.i(MainActivity.TAG, "[SwiMap] House price : " + house.getPrice());
+                    }
+                });
+    }
+
+    public static void run_scan() {
+        Observable.just(1, 2, 3, 4, 5)
+                .scan(new Func2<Integer, Integer, Integer>() {
+                    @Override
+                    public Integer call(Integer integer, Integer integer2) {
+                        return integer + integer2;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        Log.i(MainActivity.TAG, "[Scan] Result : " + integer);
+                    }
+                });
+    }
+
+    public static void run_groupBy() {
+        List<House> houses = new ArrayList<>();
+        houses.add(new House(78000, 100, "中粮·海景壹号", "中粮海景壹号新出大平层！总价4500W起"));
+        houses.add(new House(65000, 98, "竹园新村", "满五唯一，黄金地段"));
+        houses.add(new House(28000, 45, "中粮·海景壹号", "毗邻汤臣一品"));
+        houses.add(new House(38000, 69, "竹园新村", "顶层户型，两室一厅"));
+        houses.add(new House(100000, 130, "中粮·海景壹号", "南北通透，豪华五房"));
+        Observable<GroupedObservable<String, House>> groupByCommunityNameObservable = Observable.from(houses)
+                .groupBy(new Func1<House, String>() {
+
+                    @Override
+                    public String call(House house) {
+                        return house.getCommunityName();
+                    }
+                });
+
+        Observable.concat(groupByCommunityNameObservable)
+                .subscribe(new Action1<House>() {
+                    @Override
+                    public void call(House house) {
+                        Log.i(MainActivity.TAG,
+                                "[GroupBy] " + "小区:" + house.getCommunityName() + "; 房源描述:" + house.getDesc());
                     }
                 });
     }
