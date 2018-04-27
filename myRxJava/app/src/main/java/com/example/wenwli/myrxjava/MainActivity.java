@@ -26,5 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Filter
         filter.run();
+
+        // Merge
+        merge.run();
     }
 }
