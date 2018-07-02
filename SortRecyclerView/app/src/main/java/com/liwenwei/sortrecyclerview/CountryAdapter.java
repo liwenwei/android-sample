@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
@@ -18,7 +19,15 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         list = new SortedList<Country>(Country.class, new SortedList.Callback<Country>() {
             @Override
             public int compare(Country o1, Country o2) {
-                return o1.getCountry().compareTo(o2.getCountry());
+                int result = 0 - ((o1.isPined() ? 1 : 0) - (o2.isPined() ? 1 : 0));
+                if (result == 0) {
+                    if (o1.isPined() && o2.isPined()) {
+                        result = 0 - compareToTime(o1.getPinedTime(), o2.getPinedTime());
+                    } else {
+                        result = o1.getCountry().compareTo(o2.getCountry());
+                    }
+                }
+                return result;
             }
 
             @Override
@@ -53,6 +62,10 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         });
     }
 
+    private int compareToTime(Date time1, Date time2) {
+        return time1.compareTo(time2);
+    }
+
     public void addAll(List<Country> countries) {
         list.beginBatchedUpdates();
         for (int i = 0; i < countries.size(); i++) {
@@ -61,8 +74,26 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         list.endBatchedUpdates();
     }
 
+    public void add(Country country) {
+        list.beginBatchedUpdates();
+        list.add(country);
+        list.endBatchedUpdates();
+    }
+
     public Country get(int position) {
         return list.get(position);
+    }
+
+    public void pin(int position, Date pinedTime) {
+        list.beginBatchedUpdates();
+        Country country = list.get(position);
+        country.setPined(true);
+        country.setPinedTime(pinedTime);
+
+        list.removeItemAt(position);
+        list.add(country);
+
+        list.endBatchedUpdates();
     }
 
     public void clear() {
@@ -81,7 +112,11 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.tvCountry.setText(list.get(position).getCountry());
+        Country item = list.get(position);
+        holder.tvCountry.setText(item.getCountry());
+        if (item.isPined()) {
+            holder.tvCountry.setTextColor(120);
+        }
     }
 
     @Override
