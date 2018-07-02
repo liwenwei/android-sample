@@ -43,16 +43,13 @@ public class MainActivity extends AppCompatActivity {
     int i = 0;
 
     public void add(View v) {
-        if (i == 0) {
-            Country china = new Country("China");
-            countries.add(china);
-            adapter.add(china);
-        } else {
-            int index = countries.size() - i - 1;
-            if (index > 0) {
-                adapter.pin(index, Calendar.getInstance().getTime());
-            }
-        }
+        Country china = new Country("China" + i);
+        // china.setPined(true);
+        // china.setPinedTime(Calendar.getInstance().getTime());
+        adapter.add(china);
+        // adapter.pin(0, Calendar.getInstance().getTime());
+        // adapter.notifyDataSetChanged();
+
         i++;
     }
 }

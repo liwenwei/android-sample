@@ -19,15 +19,28 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         list = new SortedList<Country>(Country.class, new SortedList.Callback<Country>() {
             @Override
             public int compare(Country o1, Country o2) {
-                int result = 0 - ((o1.isPined() ? 1 : 0) - (o2.isPined() ? 1 : 0));
-                if (result == 0) {
-                    if (o1.isPined() && o2.isPined()) {
-                        result = 0 - compareToTime(o1.getPinedTime(), o2.getPinedTime());
-                    } else {
-                        result = o1.getCountry().compareTo(o2.getCountry());
-                    }
+                /**置顶判断
+                 * ArrayAdapter是按照升序从上到下排序的，就是默认的自然排序
+                 * 1. 如果是相等的情况下返回0，包括都置顶或者都不置顶，
+                 * 返回0的情况下要再做判断，拿它们置顶时间进行判断
+                 * 2. 如果是不相等的情况下，o2是置顶的，则当前o1是非置顶的，应该在o2下面，所以返回1
+                 *  同样，o1是置顶的，则当前o2是非置顶的，应该在o2上面，所以返回-1
+                 * */
+
+                // If both are pined, then sorted by the pined time
+                if (o1.isPined() && o2.isPined()) {
+                    return 0 - compareToTime(o1.getPinedTime(), o2.getPinedTime());
                 }
-                return result;
+
+                if (o1.isPined() && !o2.isPined()) {
+                    return -1;
+                }
+
+                if (!o1.isPined() && o2.isPined()) {
+                    return 1;
+                }
+
+                return o1.getCountry().compareTo(o2.getCountry());
             }
 
             @Override
@@ -42,7 +55,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
 
             @Override
             public boolean areItemsTheSame(Country item1, Country item2) {
-                return item1.getCountry().equals(item2.getCountry());
+                return item1.hashCode() == item2.hashCode();
             }
 
             @Override
