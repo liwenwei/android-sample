@@ -3,6 +3,7 @@ package com.liwenwei.sortrecyclerview;
 
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,15 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         list.add(country);
 
         list.endBatchedUpdates();
+
+        printArray("pin: ");
+    }
+
+    private void printArray(String message) {
+        Log.d("PinedUser", message);
+        for (int i = 0; i < list.size(); i++) {
+            Log.d("PinedUser", i + " " + list.get(i).getCountry());
+        }
     }
 
     public void clear() {
@@ -128,7 +138,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         Country item = list.get(position);
         holder.tvCountry.setText(item.getCountry());
         if (item.isPined()) {
-            holder.tvCountry.setTextColor(120);
+            holder.tvCountry.setBackgroundColor(R.color.colorPrimary);
         }
     }
 
