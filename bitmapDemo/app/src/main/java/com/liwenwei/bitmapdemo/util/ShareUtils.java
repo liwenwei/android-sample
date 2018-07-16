@@ -1,6 +1,5 @@
 package com.liwenwei.bitmapdemo.util;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;

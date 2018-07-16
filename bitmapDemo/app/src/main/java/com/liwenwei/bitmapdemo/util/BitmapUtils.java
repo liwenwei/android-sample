@@ -1,6 +1,5 @@
 package com.liwenwei.bitmapdemo.util;
 
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,12 +22,15 @@ public class BitmapUtils {
         return returnedBitmap;
     }
 
-    public static Bitmap getBitmapFromViewWithoutDisplay(View v) {
+    public static Bitmap getBitmapFromViewWithoutDisplay(View v, int parentWidth, int parentHeight) {
         if (v.getMeasuredHeight() <= 0) {
-            v.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+            int specWidth = parentWidth;
+            int specHeight = parentHeight;
+            v.measure(specWidth, specHeight);
+            Bitmap b = Bitmap.createBitmap(specWidth, specHeight, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b);
-            v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+            v.layout(0, 0, specWidth, specHeight);
             v.draw(c);
             return b;
         } else {
