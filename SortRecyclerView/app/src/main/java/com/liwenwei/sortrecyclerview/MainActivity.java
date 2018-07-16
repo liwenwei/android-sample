@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,21 +40,15 @@ public class MainActivity extends AppCompatActivity {
         countries.add(new Country("Malaysia"));
 
         adapter.addAll(countries);
-    }
-
-    int i = 0;
-
-    public void add(View v) {
-        // Country china = new Country("China" + i);
-        // china.setPined(true);
-        // china.setPinedTime(Calendar.getInstance().getTime());
-        // adapter.add(china);
-        i++;
-
-
-        adapter.pin(i, Calendar.getInstance().getTime());
-        adapter.notifyItemRemoved(i);
-        adapter.notifyItemInserted(0);
-        adapter.notifyItemMoved(i, 0);
+        adapter.setItemListener((courseId, isPined, position) -> {
+            Log.d("PinedUser", Integer.toString(position));
+            if (isPined) {
+                adapter.unpin(position);
+                adapter.notifyDataSetChanged();
+            } else {
+                adapter.pin(position, Calendar.getInstance().getTime());
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

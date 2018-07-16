@@ -14,6 +14,12 @@ import java.util.List;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
 
+    public interface ItemOnLongClickListener {
+        void onItemLongClicked(String courseId, boolean isPined, int position);
+    }
+
+    private ItemOnLongClickListener itemListener;
+
     SortedList<Country> list;
 
     public CountryAdapter() {
@@ -89,9 +95,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
     }
 
     public void add(Country country) {
-        list.beginBatchedUpdates();
         list.add(country);
-        list.endBatchedUpdates();
     }
 
     public Country get(int position) {
@@ -99,7 +103,6 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
     }
 
     public void pin(int position, Date pinedTime) {
-        list.beginBatchedUpdates();
         Country country = list.get(position);
         country.setPined(true);
         country.setPinedTime(pinedTime);
@@ -107,9 +110,15 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         list.removeItemAt(position);
         list.add(country);
 
-        list.endBatchedUpdates();
-
         printArray("pin: ");
+    }
+
+    public void unpin(int position) {
+        Country country = list.get(position);
+        country.setPined(false);
+
+        list.removeItemAt(position);
+        list.add(country);
     }
 
     private void printArray(String message) {
@@ -120,11 +129,9 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
     }
 
     public void clear() {
-        list.beginBatchedUpdates();
         while (list.size() > 0) {
             list.removeItemAt(list.size() - 1);
         }
-        list.endBatchedUpdates();
     }
 
     @Override
@@ -138,8 +145,18 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         Country item = list.get(position);
         holder.tvCountry.setText(item.getCountry());
         if (item.isPined()) {
-            holder.tvCountry.setBackgroundColor(R.color.colorPrimary);
+            holder.tvPinMsg.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvPinMsg.setVisibility(View.GONE);
         }
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (itemListener == null) {
+                return false;
+            }
+            itemListener.onItemLongClicked(item.getCountry(), item.isPined(), position);
+            return false;
+        });
     }
 
     @Override
@@ -147,13 +164,19 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         return list.size();
     }
 
+    public void setItemListener(ItemOnLongClickListener listener) {
+        itemListener = listener;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvCountry;
+        TextView tvPinMsg;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvCountry = itemView.findViewById(R.id.tv_country);
+            tvPinMsg = itemView.findViewById(R.id.tv_pin_msg);
         }
     }
 }
