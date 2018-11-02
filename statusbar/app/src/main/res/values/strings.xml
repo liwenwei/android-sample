@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">statusbar</string>
+    <string name="title_activity_immersive">ImmersiveActivity</string>
+</resources>
